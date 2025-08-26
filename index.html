@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✍️ StoryWrite - Professional Social Blog Platform</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22grad%22 x1=%220%%22 y1=%220%%22 x2=%22100%%22 y2=%22100%%22><stop offset=%220%%22 style=%22stop-color:%23667eea;stop-opacity:1%22 /><stop offset=%22100%%22 style=%22stop-color:%23764ba2;stop-opacity:1%22 /></linearGradient></defs><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22url(%23grad)%22/><text x=%2250%22 y=%2265%22 font-family=%22Arial,sans-serif%22 font-size=%2250%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22white%22>✍</text></svg>" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            transition: all 0.3s ease;
+        }
+        
+        .editor-content { min-height: 400px; }
+        .image-preview { max-width: 100%; height: auto; border-radius: 8px; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); 
+        }
+        .floating-nav { 
+            backdrop-filter: blur(10px); 
+            background: rgba(255, 255, 255, 0.95); 
+            transition: all 0.3s ease; 
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+        }
+        .profile-avatar { background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%); }
+        .follow-btn { background: linear-gradient(45deg, #667eea 0%, #764ba2 100%); }
+        .stats-card { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+        .notification-badge { animation: pulse 2s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Avatar gradient styles */
+        .avatar-a { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
+        .avatar-b { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .avatar-c { background: linear-gradient(45deg, #45b7d1, #96c93d); }
+        .avatar-d { background: linear-gradient(45deg, #f9ca24, #f0932b); }
+        .avatar-e { background: linear-gradient(45deg, #eb4d4b, #6c5ce7); }
+        .avatar-f { background: linear-gradient(45deg, #a55eea, #26de81); }
+        .avatar-g { background: linear-gradient(45deg, #fd79a8, #fdcb6e); }
+        .avatar-h { background: linear-gradient(45deg, #6c5ce7, #74b9ff); }
+        
+        /* Dark mode styles */
+        .dark {
+            background-color: #0f0f0f !important;
+            color: #e5e5e5 !important;
+        }
+        
+        .dark .floating-nav {
+            background: rgba(15, 15, 15, 0.95) !important;
+            border-color: #374151 !important;
+        }
+        
+        .dark .bg-white { background-color: #1f1f1f !important; }
+        .dark .bg-gray-50 { background-color: #0f0f0f !important; }
+        .dark .bg-gray-100 { background-color: #2d2d2d !important; }
+        .dark .bg-gray-200 { background-color: #374151 !important; }
+        .dark .bg-blue-50 { background-color: #1e3a8a !important; }
+        .dark .bg-red-50 { background-color: #7f1d1d !important; }
+        .dark .bg-green-50 { background-color: #14532d !important; }
+        
+        .dark .text-gray-800 { color: #f3f4f6 !important; }
+        .dark .text-gray-700 { color: #e5e7eb !important; }
+        .dark .text-gray-600 { color: #d1d5db !important; }
+        .dark .text-gray-500 { color: #9ca3af !important; }
+        .dark .text-gray-400 { color: #6b7280 !important; }
+        
+        .dark .border-gray-200 { border-color: #374151 !important; }
+        .dark .border-gray-100 { border-color: #4b5563 !important; }
+        .dark .border-gray-300 { border-color: #4b5563 !important; }
+        
+        .dark .hover\:bg-gray-50:hover { background-color: #2d2d2d !important; }
+        .dark .hover\:bg-gray-100:hover { background-color: #374151 !important; }
+        
+        .dark input, .dark textarea, .dark select { 
+            background-color: #2d2d2d !important; 
+            color: #e5e5e5 !important; 
+            border-color: #4b5563 !important; 
+        }
+        
+        .dark input::placeholder, .dark textarea::placeholder { 
+            color: #9ca3af !important; 
+        }
+        
+        .dark .shadow-lg { 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3) !important; 
+        }
+        
+        .dark .shadow-xl { 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3) !important; 
+        }
+        
+        .dark .card-hover:hover { 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2) !important; 
+        }
+        
+        .dark .stats-card { 
+            background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important; 
+        }
+        
+        .dark blockquote { 
+            background-color: #2d2d2d !important; 
+            color: #d1d5db !important; 
+        }
+        
+        .dark #editor { 
+            color: #e5e5e5 !important; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="floating-nav fixed top-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold gradient-bg bg-clip-text text-transparent">✍️ StoryWrite</h1>
+                    <div class="hidden md:flex space-x-6" id="mainNav">
+                        <button onclick="showSection('write')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Write</button>
+                        <button onclick="showSection('drafts')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Drafts</button>
+                        <button onclick="showSection('browse')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Browse</button>
+                        <button onclick="showSection('feed')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">My Feed</button>
+                        <button onclick="showSection('friends')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Friends</button>
+                        <button onclick="showSection('chat')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Chat</button>
+                        <button onclick="showSection('profile')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">My Profile</button>
+                        <button onclick="showSection('settings')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Settings</button>
+                        <button onclick="showSection('legal')" class="nav-btn text-gray-600 hover:text-purple-600 font-medium transition-colors">Legal</button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="connectionStatus" class="flex items-center space-x-2 px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <div id="connectionDot" class="w-2 h-2 rounded-full bg-green-500"></div>
+                        <span id="connectionText">Online</span>
+                    </div>
+                    <button id="darkModeToggle" onclick="toggleDarkMode()" class="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                    <div id="userInfo" class="hidden items-center space-x-3">
+                        <div class="profile-avatar w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold" id="userAvatar">U</div>
+                        <span class="text-gray-700 font-medium" id="userName">User</span>
+                        <button onclick="logout()" class="text-gray-500 hover:text-red-600 text-sm">Logout</button>
+                    </div>
+                    <div id="authButtons" class="flex space-x-3">
+                        <button onclick="showLogin()" class="px-4 py-2 text-purple-600 hover:text-purple-700 font-medium">Login</button>
+                        <button onclick="showSignup()" class="px-4 py-2 follow-btn text-white rounded-lg font-medium hover:opacity-90 transition-opacity">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div class="text-center mb-6">
+                <h2 id="authTitle" class="text-2xl font-bold text-gray-800">Welcome Back</h2>
+                <p class="text-gray-600 mt-2">Join the community of writers</p>
+            </div>
+            
+            <form id="authForm" onsubmit="handleAuth(event)">
+                <div class="space-y-4">
+                    <div id="nameField" class="hidden">
+                        <input type="text" id="fullName" placeholder="Full Name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                    </div>
+                    <div id="usernameField" class="hidden">
+                        <input type="text" id="username" placeholder="Username" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <input type="email" id="email" placeholder="Email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                    </div>
+                    <div>
+                        <input type="password" id="password" placeholder="Password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                    </div>
+                    <div id="confirmPasswordField" class="hidden">
+                        <input type="password" id="confirmPassword" placeholder="Confirm Password" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                    </div>
+                    <div id="termsField" class="hidden">
+                        <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg">
+                            <input type="checkbox" id="agreeTerms" required class="mt-1 w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 focus:ring-2">
+                            <label for="agreeTerms" class="text-sm text-gray-700">
+                                I agree to the <button type="button" onclick="openTermsModal()" class="text-purple-600 hover:text-purple-700 underline font-medium">Terms & Conditions</button> and <button type="button" onclick="openPrivacyModal()" class="text-purple-600 hover:text-purple-700 underline font-medium">Privacy Policy</button>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full mt-6 py-3 follow-btn text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                    <span id="authButtonText">Sign In</span>
+                </button>
+            </form>
+            
+            <div class="text-center mt-6">
+                <button id="authToggle" onclick="toggleAuthMode()" class="text-purple-600 hover:text-purple-700 font-medium">
+                    Don't have an account? Sign up
+                </button>
+            </div>
+            
+            <button onclick="closeAuth()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div id="termsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="gradient-bg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">Terms & Conditions</h2>
+                    <button onclick="closeTermsModal()" class="text-white hover:text-gray-300 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-8 overflow-y-auto max-h-[70vh]">
+                <div class="prose prose-gray max-w-none space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">1. Acceptance of Terms</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">By accessing and using StoryWrite ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">2. Use License</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Permission is granted to temporarily download one copy of StoryWrite per device for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>modify or copy the materials</li>
+                            <li>use the materials for any commercial purpose or for any public display</li>
+                            <li>attempt to reverse engineer any software contained on the website</li>
+                            <li>remove any copyright or other proprietary notations from the materials</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">3. Content Ownership</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">You retain ownership of all content you create and publish on StoryWrite. By publishing content, you grant StoryWrite a non-exclusive, worldwide, royalty-free license to display, distribute, and promote your content on the platform.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">4. User Conduct</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Users agree not to use the service to:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>Upload, post, or transmit any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or otherwise objectionable</li>
+                            <li>Impersonate any person or entity or falsely state or otherwise misrepresent your affiliation with a person or entity</li>
+                            <li>Upload, post, or transmit any content that infringes any patent, trademark, trade secret, copyright, or other proprietary rights</li>
+                            <li>Upload, post, or transmit any unsolicited or unauthorized advertising, promotional materials, spam, or any other form of solicitation</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">5. Account Termination</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">StoryWrite reserves the right to terminate or suspend your account at any time for violations of these terms or for any other reason deemed necessary by StoryWrite management.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">6. Disclaimer</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">The materials on StoryWrite are provided on an 'as is' basis. StoryWrite makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">7. Limitations</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">In no event shall StoryWrite or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use StoryWrite, even if StoryWrite or a StoryWrite authorized representative has been notified orally or in writing of the possibility of such damage.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">8. Revisions and Errata</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">The materials appearing on StoryWrite could include technical, typographical, or photographic errors. StoryWrite does not warrant that any of the materials on its website are accurate, complete, or current. StoryWrite may make changes to the materials contained on its website at any time without notice.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">9. Governing Law</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">These terms and conditions are governed by and construed in accordance with the laws of the jurisdiction in which StoryWrite operates, and you irrevocably submit to the exclusive jurisdiction of the courts in that state or location.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacyModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div class="gradient-bg p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold">Privacy Policy</h2>
+                    <button onclick="closePrivacyModal()" class="text-white hover:text-gray-300 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-8 overflow-y-auto max-h-[70vh]">
+                <div class="prose prose-gray max-w-none space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Information We Collect</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">StoryWrite collects information you provide directly to us, such as when you create an account, publish content, or contact us for support. This includes:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>Account information (name, email address, username)</li>
+                            <li>Profile information (bio, avatar preferences)</li>
+                            <li>Content you create (stories, drafts, comments)</li>
+                            <li>Communication data (messages, support requests)</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">How We Use Your Information</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">We use the information we collect to:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>Provide, maintain, and improve our services</li>
+                            <li>Process transactions and send related information</li>
+                            <li>Send technical notices, updates, security alerts, and support messages</li>
+                            <li>Respond to your comments, questions, and customer service requests</li>
+                            <li>Communicate with you about products, services, and events</li>
+                            <li>Monitor and analyze trends, usage, and activities</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Information Sharing</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">We do not sell, trade, or otherwise transfer your personal information to third parties without your consent, except as described in this policy. We may share your information in the following situations:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>With your consent or at your direction</li>
+                            <li>With service providers who assist us in operating our platform</li>
+                            <li>To comply with legal obligations or protect our rights</li>
+                            <li>In connection with a merger, acquisition, or sale of assets</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Data Security</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the internet or electronic storage is 100% secure.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Data Retention</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">We retain your personal information for as long as necessary to provide our services, comply with legal obligations, resolve disputes, and enforce our agreements. You may request deletion of your account and associated data at any time.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Your Rights</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Depending on your location, you may have certain rights regarding your personal information, including:</p>
+                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+                            <li>The right to access and receive a copy of your personal information</li>
+                            <li>The right to rectify or update your personal information</li>
+                            <li>The right to erase your personal information</li>
+                            <li>The right to restrict processing of your personal information</li>
+                            <li>The right to data portability</li>
+                            <li>The right to object to processing</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Cookies and Tracking</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">We use cookies and similar tracking technologies to collect and use personal information about you. This includes information about your use of our services, your preferences, and your device.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Children's Privacy</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13. If we learn that we have collected personal information from a child under 13, we will delete that information as quickly as possible.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">International Data Transfers</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">Your information may be transferred to and processed in countries other than your own. We ensure that such transfers are subject to appropriate safeguards and comply with applicable data protection laws.</p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3">Contact Us</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">If you have any questions about this Privacy Policy or our data practices, please contact us at privacy@storywrite.com or through our support channels.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offline Notice -->
+    <div id="offlineNotice" class="hidden fixed top-20 left-0 right-0 bg-amber-500 text-white text-center py-4 px-6 z-40 shadow-lg">
+        <div class="max-w-4xl mx-auto flex items-center justify-center space-x-3">
+            <div class="w-6 h-6 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"></path>
+                </svg>
+            </div>
+            <span class="font-medium">You're offline - Writing mode only. Stories can be saved as drafts until you reconnect.</span>
+        </div>
+    </div>
+
+    <div class="pt-24">
+        <!-- Write Section -->
+        <div id="writeSection" class="max-w-4xl mx-auto px-6 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="gradient-bg p-6 text-white">
+                    <h2 class="text-2xl font-bold">Create Your Story</h2>
+                    <p class="opacity-90 mt-2">Share your thoughts with the world</p>
+                </div>
+                
+                <div class="p-6 border-b border-gray-100">
+                    <input type="text" id="postTitle" placeholder="Enter your story title..." class="w-full text-3xl font-bold text-gray-800 placeholder-gray-400 border-none outline-none resize-none bg-transparent">
+                    <div class="flex gap-4 mt-4">
+                        <select id="postCategory" class="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
+                            <option value="">Select Category</option>
+                            <option value="story">Story</option>
+                            <option value="blog">Blog Post</option>
+                            <option value="tutorial">Tutorial</option>
+                            <option value="review">Review</option>
+                            <option value="personal">Personal</option>
+                            <option value="travel">Travel</option>
+                            <option value="food">Food</option>
+                            <option value="tech">Technology</option>
+                        </select>
+                        <input type="text" id="postTags" placeholder="Tags (comma separated)" class="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+
+                <div class="px-6 py-3 bg-gray-50 border-b border-gray-100">
+                    <div class="flex gap-2 flex-wrap">
+                        <button onclick="formatText('bold')" class="px-3 py-2 text-sm font-bold text-gray-600 hover:bg-purple-100 hover:text-purple-600 rounded transition-colors">B</button>
+                        <button onclick="formatText('italic')" class="px-3 py-2 text-sm italic text-gray-600 hover:bg-purple-100 hover:text-purple-600 rounded transition-colors">I</button>
+                        <button onclick="formatText('underline')" class="px-3 py-2 text-sm underline text-gray-600 hover:bg-purple-100 hover:text-purple-600 rounded transition-colors">U</button>
+                        <div class="w-px bg-gray-300 mx-2"></div>
+                        <button onclick="addQuote()" class="px-3 py-2 text-sm text-gray-600 hover:bg-purple-100 hover:text-purple-600 rounded transition-colors">Quote</button>
+                        <div class="w-px bg-gray-300 mx-2"></div>
+                        <button onclick="document.getElementById('imageInput').click()" class="px-3 py-2 text-sm text-purple-600 hover:bg-purple-100 rounded transition-colors">📷 Add Image</button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;" onchange="addImage(event)">
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <div id="editor" contenteditable="true" class="editor-content w-full text-gray-700 leading-relaxed text-lg outline-none" style="min-height: 400px;">
+                        <p class="text-gray-400">Start writing your story...</p>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-gray-50">
+                    <div class="flex gap-4 justify-end">
+                        <button onclick="saveDraft()" class="px-6 py-3 text-gray-600 hover:text-gray-800 font-medium transition-colors">Save Draft</button>
+                        <button onclick="publishPost()" id="publishBtn" class="px-6 py-3 follow-btn text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                            <span id="publishBtnText">Publish Story</span>
+                        </button>
+                    </div>
+                    <div id="offlinePublishNotice" class="hidden mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center mt-0.5">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192L5.636 18.364M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium text-sm">Offline Mode Active</p>
+                                <p class="text-sm mt-1">Your story will be saved as a draft. You can publish it once you're back online.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browse Section -->
+        <div id="browseSection" class="hidden max-w-7xl mx-auto px-6 py-12">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Discover Amazing Stories</h2>
+                <p class="text-xl text-gray-600">Connect with talented writers from around the world</p>
+            </div>
+
+            <!-- Search and Filters -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="searchInput" placeholder="Search stories, writers, or topics..." class="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none" onkeyup="filterContent()">
+                    <select id="categoryFilter" class="px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500" onchange="filterContent()">
+                        <option value="">All Categories</option>
+                        <option value="story">Stories</option>
+                        <option value="blog">Blog Posts</option>
+                        <option value="tutorial">Tutorials</option>
+                        <option value="travel">Travel</option>
+                        <option value="food">Food</option>
+                        <option value="tech">Technology</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Latest Stories -->
+            <div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-8">Latest Stories</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="storiesGrid">
+                    <p class="text-center text-gray-500 py-8 col-span-full">No stories published yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Drafts Section -->
+        <div id="draftsSection" class="hidden max-w-4xl mx-auto px-6 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="gradient-bg p-6 text-white">
+                    <h2 class="text-2xl font-bold">Your Drafts</h2>
+                    <p class="opacity-90 mt-2">Continue working on your saved stories</p>
+                </div>
+                
+                <div class="p-6">
+                    <div id="draftsList" class="space-y-4">
+                        <p class="text-gray-500 text-center py-8">No drafts saved yet. <button onclick="showSection('write')" class="text-purple-600 hover:text-purple-700 underline">Start writing!</button></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div id="profileSection" class="hidden max-w-4xl mx-auto px-6 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="gradient-bg p-8 text-white text-center">
+                    <div class="profile-avatar w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold" id="profileAvatar">U</div>
+                    <h2 class="text-2xl font-bold" id="profileName">Your Name</h2>
+                    <p class="opacity-90 mt-2" id="profileUsername">@username</p>
+                </div>
+
+                <div class="p-8">
+                    <div class="grid grid-cols-3 gap-6 mb-8">
+                        <div class="stats-card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-gray-800" id="postsCount">0</div>
+                            <div class="text-sm text-gray-600">Stories</div>
+                        </div>
+                        <div class="stats-card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-gray-800" id="followersCount">0</div>
+                            <div class="text-sm text-gray-600">Followers</div>
+                        </div>
+                        <div class="stats-card rounded-xl p-4 text-center">
+                            <div class="text-2xl font-bold text-gray-800" id="followingCount">0</div>
+                            <div class="text-sm text-gray-600">Following</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Your Stories</h3>
+                        <div id="userStories" class="space-y-4">
+                            <p class="text-gray-500 text-center py-8">No stories published yet. <button onclick="showSection('write')" class="text-purple-600 hover:text-purple-700 underline">Write your first story!</button></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSection" class="hidden max-w-4xl mx-auto px-6 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="gradient-bg p-8 text-white text-center">
+                    <h2 class="text-3xl font-bold mb-2">Settings</h2>
+                    <p class="opacity-90">Customize your StoryWrite experience</p>
+                </div>
+
+                <div class="p-8 space-y-8">
+                    <div class="border-b border-gray-200 pb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-6">Profile Settings</h3>
+                        
+                        <!-- Profile Picture Section -->
+                        <div class="mb-8">
+                            <label class="block text-sm font-medium text-gray-700 mb-4">Profile Picture</label>
+                            <div class="flex items-center space-x-6">
+                                <div class="relative">
+                                    <div class="profile-avatar w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold overflow-hidden" id="settingsAvatar">U</div>
+                                    <button onclick="document.getElementById('profileImageInput').click()" class="absolute -bottom-2 -right-2 w-8 h-8 bg-purple-500 hover:bg-purple-600 text-white rounded-full flex items-center justify-center transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </button>
+                                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
+                                </div>
+                                <div class="flex-1">
+                                    <div class="mb-4">
+                                        <button onclick="document.getElementById('profileImageInput').click()" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-medium transition-colors mr-3">
+                                            Upload Custom Image
+                                        </button>
+                                        <button onclick="resetToLetterAvatar()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                                            Use Letter Avatar
+                                        </button>
+                                    </div>
+                                    <div class="flex flex-wrap gap-3 mb-4">
+                                        <button onclick="updateAvatar('A')" class="w-12 h-12 rounded-full avatar-a text-white font-bold hover:scale-105 transition-transform">A</button>
+                                        <button onclick="updateAvatar('B')" class="w-12 h-12 rounded-full avatar-b text-white font-bold hover:scale-105 transition-transform">B</button>
+                                        <button onclick="updateAvatar('C')" class="w-12 h-12 rounded-full avatar-c text-white font-bold hover:scale-105 transition-transform">C</button>
+                                        <button onclick="updateAvatar('D')" class="w-12 h-12 rounded-full avatar-d text-white font-bold hover:scale-105 transition-transform">D</button>
+                                        <button onclick="updateAvatar('E')" class="w-12 h-12 rounded-full avatar-e text-white font-bold hover:scale-105 transition-transform">E</button>
+                                        <button onclick="updateAvatar('F')" class="w-12 h-12 rounded-full avatar-f text-white font-bold hover:scale-105 transition-transform">F</button>
+                                        <button onclick="updateAvatar('G')" class="w-12 h-12 rounded-full avatar-g text-white font-bold hover:scale-105 transition-transform">G</button>
+                                        <button onclick="updateAvatar('H')" class="w-12 h-12 rounded-full avatar-h text-white font-bold hover:scale-105 transition-transform">H</button>
+                                    </div>
+                                    <p class="text-sm text-gray-500">Upload a custom image or choose a letter avatar</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Display Name</label>
+                                <input type="text" id="settingsDisplayName" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="settingsEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none">
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                            <textarea id="settingsBio" rows="3" placeholder="Tell us about yourself..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button onclick="saveSettings()" class="px-8 py-3 follow-btn text-white rounded-lg font-medium hover:opacity-90 transition-opacity">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feed Section -->
+        <div id="feedSection" class="hidden max-w-6xl mx-auto px-6 py-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Your Personalized Feed</h2>
+                <p class="text-gray-600">Stories tailored to your interests</p>
+            </div>
+
+            <div id="personalizedFeed" class="space-y-6">
+                <p class="text-center text-gray-500 py-8">Please login to see your personalized feed!</p>
+            </div>
+        </div>
+
+        <!-- Friends Section -->
+        <div id="friendsSection" class="hidden max-w-6xl mx-auto px-6 py-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Friends & Collaborators</h2>
+                <p class="text-gray-600">Connect with writers and collaborate on stories</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">My Friends</h3>
+                <div id="friendsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <p class="text-center text-gray-500 py-4 col-span-full">No friends yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chatSection" class="hidden max-w-7xl mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 h-[650px]">
+                <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-800">Conversations</h3>
+                    </div>
+                    <div id="chatList" class="overflow-y-auto h-full">
+                        <p class="text-center text-gray-500 py-4">No conversations yet.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col">
+                    <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div class="text-center text-gray-500 py-8">
+                            <div class="text-4xl mb-2">💬</div>
+                            <p>Select a conversation to start chatting</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Section -->
+        <div id="legalSection" class="hidden max-w-4xl mx-auto px-6 py-12">
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="gradient-bg p-8 text-white text-center">
+                    <h2 class="text-3xl font-bold mb-2">Legal Information</h2>
+                    <p class="opacity-90">Terms, Privacy Policy & Data Collection</p>
+                </div>
+
+                <div class="p-8">
+                    <div class="prose prose-gray max-w-none space-y-8">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">Terms & Conditions</h4>
+                            <p class="text-gray-600 leading-relaxed mb-4">By accessing and using StoryWrite, you accept and agree to be bound by the terms and provision of this agreement. StoryWrite is a professional blogging platform for writers and storytellers.</p>
+                            <button onclick="openTermsModal()" class="text-purple-600 hover:text-purple-700 underline font-medium">Read Full Terms & Conditions</button>
+                        </div>
+                        
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">Privacy Policy</h4>
+                            <p class="text-gray-600 leading-relaxed mb-4">StoryWrite collects information to provide you with a personalized and secure experience. Your data is stored with enterprise-grade security and GDPR compliance.</p>
+                            <button onclick="openPrivacyModal()" class="text-purple-600 hover:text-purple-700 underline font-medium">Read Full Privacy Policy</button>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-8">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-6">Data Management</h4>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+                                <div class="flex items-start">
+                                    <svg class="w-6 h-6 text-yellow-600 mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    <div>
+                                        <h5 class="font-semibold text-yellow-800 mb-2">Important Security Notice</h5>
+                                        <p class="text-yellow-700 text-sm">For your security, you must enter your account password to export or delete your data. These actions cannot be undone.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                                    <h5 class="font-semibold text-blue-800 mb-3">📥 Export Your Data</h5>
+                                    <p class="text-blue-700 text-sm mb-4">Download all your stories, drafts, and profile information in JSON format.</p>
+                                    <button onclick="showPasswordModal('export')" class="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors">
+                                        Export Data
+                                    </button>
+                                </div>
+
+                                <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                                    <h5 class="font-semibold text-red-800 mb-3">🗑️ Delete Account</h5>
+                                    <p class="text-red-700 text-sm mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+                                    <button onclick="showPasswordModal('delete')" class="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors">
+                                        Delete Account
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Verification Modal -->
+    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 0h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h2 id="passwordModalTitle" class="text-2xl font-bold text-gray-800 dark:text-gray-200">Verify Your Password</h2>
+                <p id="passwordModalDescription" class="text-gray-600 dark:text-gray-400 mt-2">Please enter your password to continue</p>
+            </div>
+            
+            <form id="passwordForm" onsubmit="handlePasswordVerification(event)">
+                <div class="mb-6">
+                    <input type="password" id="verificationPassword" placeholder="Enter your password" required class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none dark:bg-gray-700 dark:text-gray-200">
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="closePasswordModal()" class="flex-1 px-4 py-3 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" id="passwordSubmitBtn" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors">
+                        Confirm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Messages -->
+    <div id="successMessage" class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50 hidden">
+        <span id="messageText">Success!</span>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let isLoginMode = true;
+        let users = JSON.parse(localStorage.getItem('storywrite_users') || '[]');
+        let posts = JSON.parse(localStorage.getItem('storywrite_posts') || '[]');
+        let drafts = JSON.parse(localStorage.getItem('storywrite_drafts') || '[]');
+        let userInteractions = JSON.parse(localStorage.getItem('storywrite_interactions') || '{}');
+        let isOnline = navigator.onLine;
+
+        // Initialize app
+        function initializeApp() {
+            // Load dark mode preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+            }
+
+            // Check for saved user
+            const savedUser = localStorage.getItem('storywrite_currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showUserInterface();
+            }
+            
+            // Setup connection monitoring
+            setupConnectionMonitoring();
+            updateConnectionStatus();
+            
+            showSection('browse');
+            setupEditor();
+        }
+
+        // Connection monitoring
+        function setupConnectionMonitoring() {
+            window.addEventListener('online', handleOnline);
+            window.addEventListener('offline', handleOffline);
+        }
+
+        function handleOnline() {
+            isOnline = true;
+            updateConnectionStatus();
+            showMessage('🌐 Back online! Full features restored.');
+        }
+
+        function handleOffline() {
+            isOnline = false;
+            updateConnectionStatus();
+            showMessage('📝 Offline mode - Writing and drafts only.');
+        }
+
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('connectionStatus');
+            const dotEl = document.getElementById('connectionDot');
+            const textEl = document.getElementById('connectionText');
+            const offlineNotice = document.getElementById('offlineNotice');
+            const publishBtn = document.getElementById('publishBtn');
+            const publishBtnText = document.getElementById('publishBtnText');
+            const offlinePublishNotice = document.getElementById('offlinePublishNotice');
+            
+            if (isOnline) {
+                statusEl.className = 'flex items-center space-x-2 px-3 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-800 border border-emerald-200';
+                dotEl.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+                textEl.textContent = 'Online';
+                offlineNotice.classList.add('hidden');
+                
+                if (publishBtn) {
+                    publishBtn.className = 'px-6 py-3 follow-btn text-white rounded-lg font-medium hover:opacity-90 transition-all duration-200';
+                    publishBtnText.textContent = 'Publish Story';
+                }
+                if (offlinePublishNotice) offlinePublishNotice.classList.add('hidden');
+            } else {
+                statusEl.className = 'flex items-center space-x-2 px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-800 border border-red-200';
+                dotEl.className = 'w-2 h-2 rounded-full bg-red-500';
+                textEl.textContent = 'Offline';
+                offlineNotice.classList.remove('hidden');
+                
+                if (publishBtn) {
+                    publishBtn.className = 'px-6 py-3 bg-gray-400 text-white rounded-lg font-medium cursor-not-allowed opacity-75';
+                    publishBtnText.textContent = 'Save as Draft';
+                }
+                if (offlinePublishNotice) offlinePublishNotice.classList.remove('hidden');
+            }
+        }
+
+        function checkConnection(action) {
+            if (!isOnline) {
+                const messages = {
+                    'auth': '🔐 Please connect to the internet to sign in',
+                    'browse': '🌐 Internet required to browse stories',
+                    'like': '❤️ Connect to the internet to like posts',
+                    'share': '📤 Internet connection needed to share',
+                    'edit': '✏️ Go online to edit published posts',
+                    'delete': '🗑️ Internet required to delete posts'
+                };
+                
+                showMessage(messages[action] || '🌐 Internet connection required');
+                return false;
+            }
+            return true;
+        }
+
+        // Dark mode toggle
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.contains('dark');
+            
+            if (isDark) {
+                document.documentElement.classList.remove('dark');
+                document.body.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.body.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+            }
+        }
+
+        // Authentication functions
+        function showLogin() {
+            isLoginMode = true;
+            document.getElementById('authTitle').textContent = 'Welcome Back';
+            document.getElementById('authButtonText').textContent = 'Sign In';
+            document.getElementById('authToggle').textContent = "Don't have an account? Sign up";
+            document.getElementById('nameField').classList.add('hidden');
+            document.getElementById('usernameField').classList.add('hidden');
+            document.getElementById('confirmPasswordField').classList.add('hidden');
+            document.getElementById('termsField').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function showSignup() {
+            isLoginMode = false;
+            document.getElementById('authTitle').textContent = 'Join StoryWrite';
+            document.getElementById('authButtonText').textContent = 'Create Account';
+            document.getElementById('authToggle').textContent = 'Already have an account? Sign in';
+            document.getElementById('nameField').classList.remove('hidden');
+            document.getElementById('usernameField').classList.remove('hidden');
+            document.getElementById('confirmPasswordField').classList.remove('hidden');
+            document.getElementById('termsField').classList.remove('hidden');
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function toggleAuthMode() {
+            if (isLoginMode) {
+                showSignup();
+            } else {
+                showLogin();
+            }
+        }
+
+        function closeAuth() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('authForm').reset();
+        }
+
+        function handleAuth(event) {
+            event.preventDefault();
+            
+            if (!checkConnection('auth')) return;
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (isLoginMode) {
+                // Login
+                const user = users.find(u => u.email === email && u.password === password);
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('storywrite_currentUser', JSON.stringify(currentUser));
+                    showUserInterface();
+                    closeAuth();
+                    showMessage('Welcome back!');
+                    showSection('browse');
+                } else {
+                    alert('Invalid email or password. Please try again.');
+                }
+            } else {
+                // Signup
+                const name = document.getElementById('fullName').value;
+                const username = document.getElementById('username').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const agreeTerms = document.getElementById('agreeTerms').checked;
+                
+                if (!agreeTerms) {
+                    alert('Please agree to the Terms & Conditions and Privacy Policy to create an account.');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    alert('Password must be at least 6 characters long!');
+                    return;
+                }
+                
+                if (users.find(u => u.email === email)) {
+                    alert('Email already exists!');
+                    return;
+                }
+                
+                if (users.find(u => u.username === username)) {
+                    alert('Username already taken!');
+                    return;
+                }
+                
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    username: username,
+                    email: email,
+                    password: password,
+                    bio: '',
+                    avatar: name.charAt(0).toUpperCase(),
+                    avatarClass: 'profile-avatar',
+                    joinDate: new Date().toISOString()
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('storywrite_users', JSON.stringify(users));
+                
+                currentUser = newUser;
+                localStorage.setItem('storywrite_currentUser', JSON.stringify(currentUser));
+                
+                showUserInterface();
+                closeAuth();
+                showMessage('Account created successfully!');
+                showSection('write');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('storywrite_currentUser');
+            showGuestInterface();
+            showSection('browse');
+            showMessage('Logged out successfully!');
+        }
+
+        function showUserInterface() {
+            document.getElementById('authButtons').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('flex');
+            document.getElementById('userName').textContent = currentUser.name;
+            
+            updateAllAvatarDisplays();
+            
+            document.getElementById('mainNav').classList.remove('hidden');
+            updateProfileSection();
+        }
+
+        function showGuestInterface() {
+            document.getElementById('authButtons').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('mainNav').classList.add('hidden');
+        }
+
+        // Navigation
+        function showSection(section) {
+            // Check connection for sections that require internet
+            if (!isOnline && section !== 'write' && section !== 'drafts') {
+                const sectionNames = {
+                    'browse': 'Browse Stories',
+                    'feed': 'Your Feed', 
+                    'friends': 'Friends',
+                    'chat': 'Chat',
+                    'profile': 'Profile',
+                    'settings': 'Settings',
+                    'legal': 'Legal'
+                };
+                showMessage(`🌐 Connect to internet to access ${sectionNames[section] || 'this section'}`);
+                return;
+            }
+            
+            const sections = ['write', 'drafts', 'browse', 'feed', 'friends', 'chat', 'profile', 'settings', 'legal'];
+            sections.forEach(s => {
+                const element = document.getElementById(s + 'Section');
+                if (element) element.classList.add('hidden');
+            });
+            
+            const selectedSection = document.getElementById(section + 'Section');
+            if (selectedSection) selectedSection.classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-purple-600');
+                btn.classList.add('text-gray-600');
+            });
+            
+            if (section === 'browse') updateBrowseSection();
+            if (section === 'drafts') updateDraftsSection();
+            if (section === 'profile') updateProfileSection();
+            if (section === 'settings') updateSettingsSection();
+        }
+
+        // Editor functions
+        function setupEditor() {
+            const editor = document.getElementById('editor');
+            
+            editor.addEventListener('focus', function() {
+                if (this.innerHTML.includes('text-gray-400')) {
+                    this.innerHTML = '';
+                }
+            });
+
+            editor.addEventListener('blur', function() {
+                if (this.innerHTML.trim() === '') {
+                    this.innerHTML = '<p class="text-gray-400">Start writing your story...</p>';
+                }
+            });
+        }
+
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            document.getElementById('editor').focus();
+        }
+
+        function addSubheading() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const subtitle = document.createElement('div');
+                subtitle.className = 'text-2xl font-bold text-gray-800 mt-6 mb-4 leading-snug';
+                subtitle.contentEditable = true;
+                subtitle.textContent = selection.toString() || 'Your Subheading Here';
+                
+                range.deleteContents();
+                range.insertNode(subtitle);
+                
+                range.setStartAfter(subtitle);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            document.getElementById('editor').focus();
+        }
+
+        function addQuote() {
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                const quote = document.createElement('blockquote');
+                quote.className = 'border-l-4 border-purple-500 pl-4 py-2 my-4 italic text-gray-600 bg-gray-50';
+                quote.textContent = selection.toString() || 'Your quote here...';
+                
+                range.deleteContents();
+                range.insertNode(quote);
+                
+                range.setStartAfter(quote);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+            document.getElementById('editor').focus();
+        }
+
+        function addImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'image-preview my-4 mx-auto block shadow-md';
+                    img.alt = 'Blog image';
+                    
+                    const selection = window.getSelection();
+                    if (selection.rangeCount > 0) {
+                        const range = selection.getRangeAt(0);
+                        range.insertNode(img);
+                        
+                        const p = document.createElement('p');
+                        p.innerHTML = '<br>';
+                        range.setStartAfter(img);
+                        range.insertNode(p);
+                        
+                        range.setStartAfter(p);
+                        range.collapse(true);
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+            document.getElementById('editor').focus();
+        }
+
+        function saveDraft() {
+            if (!currentUser) {
+                alert('Please login to save drafts!');
+                return;
+            }
+            
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('editor').innerHTML;
+            const category = document.getElementById('postCategory').value;
+            const tags = document.getElementById('postTags').value;
+            
+            if (!title.trim() && content.trim() === '<p class="text-gray-400">Start writing your story...</p>') {
+                alert('Please add some content before saving!');
+                return;
+            }
+            
+            const draft = {
+                id: Date.now(),
+                userId: currentUser.id,
+                title: title || 'Untitled Draft',
+                content: content,
+                category: category,
+                tags: tags,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            
+            drafts.push(draft);
+            localStorage.setItem('storywrite_drafts', JSON.stringify(drafts));
+            
+            showMessage('Draft saved successfully!');
+        }
+
+        function publishPost() {
+            if (!currentUser) {
+                alert('Please login to publish stories!');
+                return;
+            }
+            
+            if (!isOnline) {
+                showMessage('📝 Offline - Story saved as draft. Publish when you\'re back online!');
+                saveDraft();
+                return;
+            }
+            
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('editor').innerHTML;
+            const category = document.getElementById('postCategory').value;
+            const tags = document.getElementById('postTags').value;
+            
+            if (!title.trim() || content.trim() === '<p class="text-gray-400">Start writing your story...</p>') {
+                alert('Please add a title and content before publishing!');
+                return;
+            }
+            
+            const post = {
+                id: Date.now(),
+                userId: currentUser.id,
+                author: currentUser.name,
+                username: currentUser.username,
+                avatar: currentUser.avatar,
+                avatarClass: currentUser.avatarClass || 'profile-avatar',
+                isCustomImage: currentUser.isCustomImage || false,
+                title: title,
+                content: content,
+                category: category,
+                tags: tags.split(',').map(tag => tag.trim()).filter(tag => tag),
+                publishedAt: new Date().toISOString(),
+                views: 0,
+                likes: 0,
+                comments: []
+            };
+            
+            posts.push(post);
+            localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+            
+            // Clear editor
+            document.getElementById('postTitle').value = '';
+            document.getElementById('editor').innerHTML = '<p class="text-gray-400">Start writing your story...</p>';
+            document.getElementById('postCategory').value = '';
+            document.getElementById('postTags').value = '';
+            
+            showMessage('Story published successfully!');
+            updateProfileSection();
+        }
+
+        // Browse section
+        function updateBrowseSection() {
+            const storiesGrid = document.getElementById('storiesGrid');
+            if (storiesGrid) {
+                if (posts.length === 0) {
+                    storiesGrid.innerHTML = '<p class="text-center text-gray-500 py-8 col-span-full">No stories published yet.</p>';
+                } else {
+                    storiesGrid.innerHTML = posts.map(post => {
+                        const avatarHtml = post.isCustomImage 
+                            ? `<img src="${post.avatar}" alt="Profile" class="w-full h-full object-cover rounded-full">`
+                            : post.avatar;
+                        const avatarClass = post.isCustomImage 
+                            ? 'w-10 h-10 rounded-full overflow-hidden mr-3'
+                            : `${post.avatarClass || 'profile-avatar'} w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3`;
+                        
+                        return `
+                        <div class="bg-white rounded-2xl shadow-lg overflow-hidden card-hover">
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="${avatarClass}">${avatarHtml}</div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800">${post.author}</h4>
+                                        <p class="text-sm text-gray-500">@${post.username || 'user'} • ${new Date(post.publishedAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-3">${post.title}</h3>
+                                <p class="text-gray-600 mb-4">${post.content.replace(/<[^>]*>/g, '').substring(0, 150)}...</p>
+                                ${post.category ? `<span class="inline-block bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium mb-4">${post.category}</span>` : ''}
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                        <span>👁️ ${post.views}</span>
+                                        <span>❤️ ${post.likes}</span>
+                                    </div>
+                                    <button onclick="readPost('${post.id}')" class="text-purple-600 hover:text-purple-700 font-medium text-sm">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('');
+                }
+            }
+        }
+
+        function filterContent() {
+            // Filter functionality would be implemented here
+        }
+
+        function readPost(postId) {
+            if (!checkConnection('browse')) return;
+            
+            const post = posts.find(p => p.id == postId);
+            if (!post) return;
+            
+            // Track view only if user hasn't viewed this post before
+            if (currentUser) {
+                const userId = currentUser.id;
+                if (!userInteractions[userId]) {
+                    userInteractions[userId] = { views: [], likes: [] };
+                }
+                
+                if (!userInteractions[userId].views.includes(postId)) {
+                    userInteractions[userId].views.push(postId);
+                    post.views++;
+                    localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+                    localStorage.setItem('storywrite_interactions', JSON.stringify(userInteractions));
+                }
+            } else {
+                // For guest users, increment view count each time
+                post.views++;
+                localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+            }
+            
+            // Show post modal
+            showPostModal(post);
+        }
+
+        function showPostModal(post) {
+            const modal = document.createElement('div');
+            modal.id = 'postModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+                    <div class="gradient-bg p-6 text-white">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="${post.isCustomImage ? 'w-12 h-12 rounded-full overflow-hidden mr-4' : `${post.avatarClass || 'profile-avatar'} w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold mr-4`}">
+                                    ${post.isCustomImage ? `<img src="${post.avatar}" alt="Profile" class="w-full h-full object-cover rounded-full">` : post.avatar}
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">${post.author}</h3>
+                                    <p class="opacity-90">@${post.username || 'user'} • ${new Date(post.publishedAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <button onclick="closePostModal()" class="text-white hover:text-gray-300 transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 overflow-y-auto max-h-[70vh]">
+                        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">${post.title}</h1>
+                        
+                        <div class="flex items-center gap-4 mb-6">
+                            ${post.category ? `<span class="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-sm font-medium">${post.category}</span>` : ''}
+                            ${post.tags && post.tags.length > 0 ? post.tags.map(tag => `<span class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">#${tag}</span>`).join('') : ''}
+                        </div>
+                        
+                        <div class="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 leading-relaxed">
+                            ${post.content}
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-600">
+                            <div class="flex items-center space-x-6 text-gray-500 dark:text-gray-400">
+                                <span class="flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    ${post.views} views
+                                </span>
+                                <button onclick="likePost('${post.id}')" class="flex items-center hover:text-red-500 transition-colors ${currentUser && userInteractions[currentUser.id] && userInteractions[currentUser.id].likes.includes(post.id) ? 'text-red-500' : ''}">
+                                    <svg class="w-5 h-5 mr-2" fill="${currentUser && userInteractions[currentUser.id] && userInteractions[currentUser.id].likes.includes(post.id) ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                    </svg>
+                                    ${post.likes} likes
+                                </button>
+                            </div>
+                            
+                            <div class="flex space-x-3">
+                                <button onclick="sharePost('${post.id}')" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors">
+                                    Share
+                                </button>
+                                ${currentUser && currentUser.id === post.userId ? `
+                                    <button onclick="editPost('${post.id}')" class="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg font-medium transition-colors">Edit</button>
+                                    <button onclick="deletePost('${post.id}')" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors">Delete</button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePostModal();
+                }
+            });
+        }
+
+        function closePostModal() {
+            const modal = document.getElementById('postModal');
+            if (modal) {
+                modal.remove();
+                updateBrowseSection(); // Refresh to show updated view count
+            }
+        }
+
+        function likePost(postId) {
+            if (!currentUser) {
+                alert('Please login to like posts!');
+                return;
+            }
+            
+            if (!checkConnection('like')) return;
+            
+            const post = posts.find(p => p.id == postId);
+            if (!post) return;
+            
+            const userId = currentUser.id;
+            if (!userInteractions[userId]) {
+                userInteractions[userId] = { views: [], likes: [] };
+            }
+            
+            // Check if user has already liked this post
+            if (userInteractions[userId].likes.includes(postId)) {
+                showMessage('You have already liked this post!');
+                return;
+            }
+            
+            // Add like
+            userInteractions[userId].likes.push(postId);
+            post.likes++;
+            localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+            localStorage.setItem('storywrite_interactions', JSON.stringify(userInteractions));
+            
+            // Update the modal display
+            const modal = document.getElementById('postModal');
+            if (modal) {
+                closePostModal();
+                showPostModal(post);
+            }
+            
+            showMessage('Post liked!');
+        }
+
+        function sharePost(postId) {
+            if (!checkConnection('share')) return;
+            
+            const post = posts.find(p => p.id == postId);
+            if (post) {
+                if (navigator.share) {
+                    navigator.share({
+                        title: post.title,
+                        text: `Check out this story by ${post.author}: ${post.title}`,
+                        url: window.location.href
+                    });
+                } else {
+                    // Fallback: copy to clipboard
+                    const shareText = `Check out this story by ${post.author}: "${post.title}" on StoryWrite!`;
+                    navigator.clipboard.writeText(shareText).then(() => {
+                        showMessage('Story link copied to clipboard!');
+                    }).catch(() => {
+                        showMessage('Story ready to share!');
+                    });
+                }
+            }
+        }
+
+        function editPost(postId) {
+            if (!checkConnection('edit')) return;
+            
+            const post = posts.find(p => p.id == postId);
+            if (post && currentUser && currentUser.id === post.userId) {
+                document.getElementById('postTitle').value = post.title;
+                document.getElementById('editor').innerHTML = post.content;
+                document.getElementById('postCategory').value = post.category || '';
+                document.getElementById('postTags').value = post.tags ? post.tags.join(', ') : '';
+                
+                closePostModal();
+                showSection('write');
+                showMessage('Post loaded for editing!');
+            }
+        }
+
+        function deletePost(postId) {
+            if (!checkConnection('delete')) return;
+            
+            const post = posts.find(p => p.id == postId);
+            if (post && currentUser && currentUser.id === post.userId) {
+                if (confirm(`Are you sure you want to delete "${post.title}"? This action cannot be undone.`)) {
+                    posts = posts.filter(p => p.id != postId);
+                    localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+                    
+                    closePostModal();
+                    updateBrowseSection();
+                    updateProfileSection();
+                    showMessage('Post deleted successfully!');
+                }
+            }
+        }
+
+        // Drafts section
+        function updateDraftsSection() {
+            if (!currentUser) return;
+            
+            const userDrafts = drafts.filter(d => d.userId === currentUser.id);
+            const draftsList = document.getElementById('draftsList');
+            
+            if (userDrafts.length === 0) {
+                draftsList.innerHTML = '<p class="text-gray-500 text-center py-8">No drafts saved yet. <button onclick="showSection(\'write\')" class="text-purple-600 hover:text-purple-700 underline">Start writing!</button></p>';
+            } else {
+                draftsList.innerHTML = userDrafts.map(draft => `
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <h4 class="font-bold text-gray-800 mb-2">${draft.title}</h4>
+                                <p class="text-gray-600 text-sm mb-2">${draft.content.replace(/<[^>]*>/g, '').substring(0, 100)}...</p>
+                                <div class="flex items-center text-xs text-gray-500 space-x-4">
+                                    <span>Created: ${new Date(draft.createdAt).toLocaleDateString()}</span>
+                                    <span>Updated: ${new Date(draft.updatedAt).toLocaleDateString()}</span>
+                                </div>
+                            </div>
+                            <div class="flex space-x-2 ml-4">
+                                <button onclick="editDraft('${draft.id}')" class="px-3 py-1 bg-purple-500 hover:bg-purple-600 text-white rounded text-sm">Edit</button>
+                                <button onclick="deleteDraft('${draft.id}')" class="px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-sm">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function editDraft(draftId) {
+            const draft = drafts.find(d => d.id == draftId);
+            if (draft) {
+                document.getElementById('postTitle').value = draft.title;
+                document.getElementById('editor').innerHTML = draft.content;
+                document.getElementById('postCategory').value = draft.category || '';
+                document.getElementById('postTags').value = draft.tags || '';
+                showSection('write');
+                showMessage('Draft loaded for editing!');
+            }
+        }
+
+        function deleteDraft(draftId) {
+            if (confirm('Are you sure you want to delete this draft?')) {
+                drafts = drafts.filter(d => d.id != draftId);
+                localStorage.setItem('storywrite_drafts', JSON.stringify(drafts));
+                updateDraftsSection();
+                showMessage('Draft deleted!');
+            }
+        }
+
+        // Profile section
+        function updateProfileSection() {
+            if (!currentUser) return;
+            
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileUsername').textContent = '@' + (currentUser.username || 'user');
+            
+            const profileAvatar = document.getElementById('profileAvatar');
+            profileAvatar.textContent = currentUser.avatar;
+            profileAvatar.className = `w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold ${currentUser.avatarClass || 'profile-avatar'}`;
+            
+            const userPosts = posts.filter(p => p.userId === currentUser.id);
+            
+            document.getElementById('postsCount').textContent = userPosts.length;
+            document.getElementById('followersCount').textContent = '0';
+            document.getElementById('followingCount').textContent = '0';
+            
+            const storiesContainer = document.getElementById('userStories');
+            if (userPosts.length === 0) {
+                storiesContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No stories published yet. <button onclick="showSection(\'write\')" class="text-purple-600 hover:text-purple-700 underline">Write your first story!</button></p>';
+            } else {
+                storiesContainer.innerHTML = userPosts.map(post => `
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-bold text-gray-800 mb-2">${post.title}</h4>
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <span>Published ${new Date(post.publishedAt).toLocaleDateString()}</span>
+                            <div class="flex items-center space-x-4">
+                                <span>👁️ ${post.views}</span>
+                                <span>❤️ ${post.likes}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Settings section
+        function updateSettingsSection() {
+            if (!currentUser) return;
+            
+            document.getElementById('settingsDisplayName').value = currentUser.name;
+            document.getElementById('settingsEmail').value = currentUser.email;
+            document.getElementById('settingsBio').value = currentUser.bio || '';
+            
+            updateAllAvatarDisplays();
+        }
+
+        function uploadProfileImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                alert('Image size must be less than 5MB');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = e.target.result;
+                
+                currentUser.avatar = imageData;
+                currentUser.avatarClass = 'custom-image';
+                currentUser.isCustomImage = true;
+                
+                updateAllAvatarDisplays();
+                saveUserData();
+                showMessage('Profile picture updated!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetToLetterAvatar() {
+            if (!currentUser) return;
+            
+            const firstLetter = currentUser.name.charAt(0).toUpperCase();
+            currentUser.avatar = firstLetter;
+            currentUser.avatarClass = 'profile-avatar';
+            currentUser.isCustomImage = false;
+            
+            updateAllAvatarDisplays();
+            saveUserData();
+            showMessage('Reset to letter avatar!');
+        }
+
+        function updateAvatar(letter) {
+            if (!currentUser) return;
+            
+            const avatarClasses = {
+                'A': 'avatar-a',
+                'B': 'avatar-b',
+                'C': 'avatar-c',
+                'D': 'avatar-d',
+                'E': 'avatar-e',
+                'F': 'avatar-f',
+                'G': 'avatar-g',
+                'H': 'avatar-h'
+            };
+            
+            currentUser.avatar = letter;
+            currentUser.avatarClass = avatarClasses[letter];
+            currentUser.isCustomImage = false;
+            
+            updateAllAvatarDisplays();
+            saveUserData();
+            showMessage('Avatar updated!');
+        }
+
+        function updateAllAvatarDisplays() {
+            if (!currentUser) return;
+            
+            const isCustomImage = currentUser.isCustomImage;
+            const avatar = currentUser.avatar;
+            const avatarClass = currentUser.avatarClass || 'profile-avatar';
+            
+            // Update navigation avatar
+            const userAvatar = document.getElementById('userAvatar');
+            if (isCustomImage) {
+                userAvatar.innerHTML = `<img src="${avatar}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+                userAvatar.className = 'w-8 h-8 rounded-full overflow-hidden';
+            } else {
+                userAvatar.textContent = avatar;
+                userAvatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${avatarClass}`;
+            }
+            
+            // Update profile page avatar
+            const profileAvatar = document.getElementById('profileAvatar');
+            if (profileAvatar) {
+                if (isCustomImage) {
+                    profileAvatar.innerHTML = `<img src="${avatar}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+                    profileAvatar.className = 'w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden';
+                } else {
+                    profileAvatar.textContent = avatar;
+                    profileAvatar.className = `w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold ${avatarClass}`;
+                }
+            }
+            
+            // Update settings avatar
+            const settingsAvatar = document.getElementById('settingsAvatar');
+            if (settingsAvatar) {
+                if (isCustomImage) {
+                    settingsAvatar.innerHTML = `<img src="${avatar}" alt="Profile" class="w-full h-full object-cover rounded-full">`;
+                    settingsAvatar.className = 'w-20 h-20 rounded-full overflow-hidden';
+                } else {
+                    settingsAvatar.textContent = avatar;
+                    settingsAvatar.className = `w-20 h-20 rounded-full flex items-center justify-center text-white text-2xl font-bold ${avatarClass}`;
+                }
+            }
+        }
+
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                localStorage.setItem('storywrite_users', JSON.stringify(users));
+            }
+            
+            localStorage.setItem('storywrite_currentUser', JSON.stringify(currentUser));
+        }
+
+        function saveSettings() {
+            if (!currentUser) return;
+            
+            currentUser.name = document.getElementById('settingsDisplayName').value;
+            currentUser.email = document.getElementById('settingsEmail').value;
+            currentUser.bio = document.getElementById('settingsBio').value;
+            
+            saveUserData();
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            updateProfileSection();
+            
+            showMessage('Settings saved successfully!');
+        }
+
+        // Modal functions
+        function openTermsModal() {
+            document.getElementById('termsModal').classList.remove('hidden');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('termsModal').classList.add('hidden');
+        }
+
+        function openPrivacyModal() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+        }
+
+        function closePrivacyModal() {
+            document.getElementById('privacyModal').classList.add('hidden');
+        }
+
+        // Password verification and data management
+        let pendingAction = null;
+
+        function showPasswordModal(action) {
+            if (!currentUser) {
+                alert('Please login to access this feature!');
+                return;
+            }
+            
+            pendingAction = action;
+            const modal = document.getElementById('passwordModal');
+            const title = document.getElementById('passwordModalTitle');
+            const description = document.getElementById('passwordModalDescription');
+            const submitBtn = document.getElementById('passwordSubmitBtn');
+            
+            if (action === 'export') {
+                title.textContent = 'Export Your Data';
+                description.textContent = 'Please enter your password to download your data';
+                submitBtn.textContent = 'Export Data';
+                submitBtn.className = 'flex-1 px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors';
+            } else if (action === 'delete') {
+                title.textContent = 'Delete Account';
+                description.textContent = 'Please enter your password to permanently delete your account';
+                submitBtn.textContent = 'Delete Account';
+                submitBtn.className = 'flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors';
+            }
+            
+            modal.classList.remove('hidden');
+            document.getElementById('verificationPassword').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+            document.getElementById('passwordForm').reset();
+            pendingAction = null;
+        }
+
+        function handlePasswordVerification(event) {
+            event.preventDefault();
+            
+            const enteredPassword = document.getElementById('verificationPassword').value;
+            
+            if (enteredPassword !== currentUser.password) {
+                alert('Incorrect password. Please try again.');
+                return;
+            }
+            
+            closePasswordModal();
+            
+            if (pendingAction === 'export') {
+                exportUserData();
+            } else if (pendingAction === 'delete') {
+                deleteUserAccount();
+            }
+        }
+
+        function exportUserData() {
+            const userPosts = posts.filter(p => p.userId === currentUser.id);
+            const userDrafts = drafts.filter(d => d.userId === currentUser.id);
+            
+            const exportData = {
+                user: {
+                    name: currentUser.name,
+                    username: currentUser.username,
+                    email: currentUser.email,
+                    bio: currentUser.bio,
+                    avatar: currentUser.avatar,
+                    joinDate: currentUser.joinDate
+                },
+                posts: userPosts,
+                drafts: userDrafts,
+                exportDate: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `storywrite-data-${currentUser.username}-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showMessage('Data exported successfully!');
+        }
+
+        function deleteUserAccount() {
+            if (!confirm('Are you absolutely sure you want to delete your account? This action cannot be undone and will permanently delete all your stories, drafts, and profile information.')) {
+                return;
+            }
+            
+            // Remove user's posts
+            posts = posts.filter(p => p.userId !== currentUser.id);
+            localStorage.setItem('storywrite_posts', JSON.stringify(posts));
+            
+            // Remove user's drafts
+            drafts = drafts.filter(d => d.userId !== currentUser.id);
+            localStorage.setItem('storywrite_drafts', JSON.stringify(drafts));
+            
+            // Remove user from users array
+            users = users.filter(u => u.id !== currentUser.id);
+            localStorage.setItem('storywrite_users', JSON.stringify(users));
+            
+            // Clear current user session
+            localStorage.removeItem('storywrite_currentUser');
+            currentUser = null;
+            
+            showGuestInterface();
+            showSection('browse');
+            showMessage('Account deleted successfully. We\'re sorry to see you go!');
+        }
+
+        // Utility functions
+        function showMessage(message) {
+            const messageEl = document.getElementById('successMessage');
+            const textEl = document.getElementById('messageText');
+            textEl.textContent = message;
+            messageEl.classList.remove('hidden');
+            messageEl.style.transform = 'translateX(0)';
+            setTimeout(() => {
+                messageEl.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    messageEl.classList.add('hidden');
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize app when page loads
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9755445b76d0fa02',t:'MTc1NjIzMTYyOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
